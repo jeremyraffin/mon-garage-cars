@@ -1,0 +1,14 @@
+:root {
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-link: #0b57d0;
+
+  --space-4: 1rem;
+  --space-6: 2rem;
+
+  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-base: 1.125rem;
+  --font-size-xl: 2rem;
+
+  --tap-target-min: 3rem;
+}
