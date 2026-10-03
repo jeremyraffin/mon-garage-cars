@@ -163,7 +163,7 @@ Pour un dépôt public GitHub, activer au minimum selon la compatibilité du pro
 Contrôles supplémentaires du projet :
 
 - SCA : `npm audit --audit-level=high` dans `verify:security` ; Dependabot hebdomadaire, délai de 7 jours avant de proposer une version récente, mises à jour majeures non groupées.
-- SAST : CodeQL (code scanning GitHub).
+- SAST : CodeQL, workflow `.github/workflows/codeql.yml` (JavaScript/TypeScript et GitHub Actions) sur chaque PR, sur `main` et chaque lundi ; résultats dans le code scanning GitHub.
 - secrets : secretlint (`npm run secrets`) avant commit et en CI ; secret scanning et push protection côté GitHub.
 - contrôles du build : `npm run security:local` (aucun `.env` ni sauvegarde suivi par Git, aucune clé secrète dans `dist/`).
 - conteneurs/IaC : N/A
