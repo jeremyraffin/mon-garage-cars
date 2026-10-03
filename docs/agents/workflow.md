@@ -18,7 +18,7 @@
 | staging | projet Supabase temporaire, réservé aux évolutions sensibles | factices |
 | production | Cloudflare Pages depuis `main` après merge humain, et l'unique projet Supabase permanent | réelles, privées |
 
-Déploiement Cloudflare Pages : branche de production `main`, build `npm ci && npm run build`, sortie `dist`. Cloudflare n'utilise pas `.nvmrc` : la variable globale `NODE_VERSION` du projet porte la version de Node. Elle reprend la valeur de `.nvmrc` et les deux se mettent à jour ensemble. Les dépendances exigent Node 24.15 ou plus récent et `engine-strict` fait échouer l'installation sur une version plus ancienne.
+Déploiement Cloudflare Pages : branche de production `main`, build `npm ci && npm run build`, sortie `dist`. Cloudflare lit la version de Node dans `.nvmrc`, seule source de vérité : aucune variable `NODE_VERSION` n'est définie côté Cloudflare. Pendant le bootstrap, une variable `NODE_VERSION` saisie dans l'interface a ramené le build à Node 24.13.1 malgré `.nvmrc`. Les dépendances exigent Node 24.15 ou plus récent et `engine-strict` fait échouer l'installation sur une version plus ancienne.
 
 ## 2. Classification locale
 
