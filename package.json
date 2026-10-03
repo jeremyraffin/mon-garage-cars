@@ -25,7 +25,8 @@
     "hooks:install": "git config core.hooksPath .githooks",
     "verify:fast": "npm run format:check && npm run lint",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run db:test && npm run build && npm run e2e",
-    "verify:security": "npm run verify && npm audit --audit-level=high && npm run security:local"
+    "verify:security": "npm run verify && npm audit --audit-level=high && npm run secrets && npm run security:local",
+    "secrets": "secretlint \"**/*\""
   },
   "dependencies": {
     "react": "^19.3.0",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.6",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
@@ -47,6 +49,7 @@
     "globals": "^17.13.0",
     "jsdom": "^30.1.1",
     "prettier": "^3.9.9",
+    "secretlint": "^13.0.6",
     "supabase": "2.119.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
