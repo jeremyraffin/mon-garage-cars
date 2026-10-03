@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { Page } from '../design-system/Page';
 
-export function ShowcasePage() {
+export function VitrinePage() {
   return (
     <Page title="Mon Garage de Miniatures">
       <p>Coquille technique neutre de la Vitrine.</p>

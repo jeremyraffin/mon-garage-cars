@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router';
 import { GaragePage } from './routes/GaragePage';
-import { ShowcasePage } from './routes/ShowcasePage';
+import { VitrinePage } from './routes/VitrinePage';
 
 export const routes = [
-  { path: '/', element: <ShowcasePage /> },
+  { path: '/', element: <VitrinePage /> },
   { path: '/garage', element: <GaragePage /> },
 ];
 
