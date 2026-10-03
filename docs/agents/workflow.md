@@ -187,7 +187,7 @@ Avant une nouvelle abstraction :
 
 Contraintes locales :
 
-- limites de modules : un paquet unique ; `src/` pour le client, `supabase/` pour le backend versionné, `e2e/` pour les parcours transversaux, `public/` pour les seuls éléments publics (ADR 0005). Les lectures passent par Supabase sous RLS, les mutations par les Edge Functions (ADR 0003).
+- limites de modules : un paquet unique ; `src/` pour le client, `supabase/` pour le backend versionné, `e2e/` pour les parcours transversaux, `public/` pour les seuls éléments publics (ADR 0005). `tsc` vérifie aussi `supabase/functions/` ; une Edge Function qui exige Deno (imports `npm:` ou `jsr:`) demande une décision sur son typage. Les lectures passent par Supabase sous RLS, les mutations par les Edge Functions (ADR 0003).
 - dépendances : celles de `package.json` ; variables CSS et CSS Modules comme seule couche de style. Une bibliothèque UI, Storybook, un framework CSS, un second paquet ou un outil d'analytics demandent une nouvelle décision.
 - règles de compatibilité : Safari iPhone et iPad en priorité, Chrome Android, puis navigateurs de bureau récents ; tests automatisés sur Chromium et WebKit ; Node 24.15 ou plus récent.
 - exigences de performance : aucune cible chiffrée dans la spec 0001 ; chaque spec de tranche fixe les siennes.
