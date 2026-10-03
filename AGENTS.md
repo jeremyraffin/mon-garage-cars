@@ -5,9 +5,12 @@
 
 Ce projet suit l’`Agentic Software Engineering Workflow v0.1`. Lire aussi :
 
-- `docs/agents/workflow.md` pour les règles propres au projet ;
+- `docs/agents/workflow.md` pour les règles propres au projet : environnements, langues, matrice de vérification, sécurité, contraintes d’architecture ;
 - `docs/agents/models.md` pour l’affectation des rôles ;
-- `docs/adr/` pour les décisions architecturales acceptées.
+- `docs/adr/` pour les décisions architecturales acceptées ;
+- `CONTEXT.md` pour le langage du domaine, à employer dans le code, les issues et les specs ;
+- `docs/specs/0001-premier-garage-utilisable.md` pour la spec du premier Garage utilisable ;
+- `docs/agents/bootstrap-plan.md` pour le plan de bootstrap.
 
 ## 1. Classer avant d’agir
 
@@ -62,17 +65,17 @@ Escalader aussi si le scope dérive, si la spec paraît incorrecte, si une dépe
 Ne jamais déclarer une tâche terminée sans exécuter la commande adaptée et rapporter son résultat.
 
 ```bash
-# FAST — contrôle ciblé et rapide
-<À_ADAPTER: commande verify:fast>
+# FAST — format et lint
+npm run verify:fast
 
-# STANDARD — lint, types, tests et build pertinents
-<À_ADAPTER: commande verify>
+# STANDARD — verify:fast, types, tests, pgTAP, build et E2E
+npm run verify
 
-# HIGH-RISK ou changement sensible
-<À_ADAPTER: commande verify:security>
+# HIGH-RISK ou changement sensible — verify, audit, secrets, contrôles du build
+npm run verify:security
 ```
 
-Si une vérification ne peut pas être exécutée, le signaler explicitement avec la raison et le risque résiduel.
+Prérequis et contenu des commandes : `docs/agents/workflow.md`, section 5. Si une vérification ne peut pas être exécutée, le signaler explicitement avec la raison et le risque résiduel.
 
 ## 6. Review indépendante
 
