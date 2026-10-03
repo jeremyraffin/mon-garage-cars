@@ -24,7 +24,7 @@
     "security:local": "node scripts/security-checks.mjs",
     "hooks:install": "git config core.hooksPath .githooks",
     "verify:fast": "npm run format:check && npm run lint",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run db:test && npm run build && npm run e2e",
+    "verify": "npm run verify:fast && npm run typecheck && npm run test && npm run db:test && npm run build && npm run e2e",
     "verify:security": "npm run verify && npm audit --audit-level=high && npm run secrets && npm run security:local",
     "secrets": "secretlint \"**/*\""
   },
@@ -39,7 +39,6 @@
     "@secretlint/secretlint-rule-preset-recommend": "13.0.6",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
-    "@testing-library/user-event": "14.6.7",
     "@types/node": "24.19.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
