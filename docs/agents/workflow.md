@@ -110,7 +110,7 @@ fix/456-short-description
 - Conventional Commits ; scope facultatif mais utile ;
 - PR requise pour STANDARD et HIGH-RISK ;
 - titre de PR compatible Conventional Commits ;
-- description : What, Why, Verification, Risks, lien vers l’issue ;
+- description : What, Why, Verification, Risks, Merge Danger (porte à sens unique ou réversible, rayon d’impact) et lien vers l’issue ; gabarit dans `.github/pull_request_template.md`, gabarits d’issues dans `.github/ISSUE_TEMPLATE/` ;
 - squash merge par défaut ;
 - branche `main` protégée avec PR et checks requis.
 
