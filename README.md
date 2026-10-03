@@ -4,7 +4,7 @@ Catalogue visuel et sonore des miniatures de l'univers des films _Cars_ que poss
 
 ## Statut
 
-Bootstrap technique en cours (issue #2). Le dépôt contient une coquille neutre : aucune fonctionnalité produit n'est encore implémentée.
+Bootstrap technique terminé (issue #2). Le dépôt contient une coquille neutre et son outillage de vérification : aucune fonctionnalité produit n'est encore implémentée. La première tranche produit est la Vitrine publique (issue #3).
 
 ## Périmètre
 

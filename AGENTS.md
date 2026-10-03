@@ -1,8 +1,5 @@
 # Règles de travail des agents
 
-> **État : `BOOTSTRAP_REQUIRED`**  
-> Tant que ce bloc est présent, ne pas commencer l’implémentation produit et ne jamais exécuter les placeholders `<À_ADAPTER>`. Le Product/Spec Agent peut mener le grill. Après validation humaine du plan de bootstrap, l’agent de bootstrap est autorisé à compléter ce fichier et à supprimer ce bloc. Les autres agents ne modifient pas ce fichier.
-
 Ce projet suit l’`Agentic Software Engineering Workflow v0.1`. Lire aussi :
 
 - `docs/agents/workflow.md` pour les règles propres au projet : environnements, langues, matrice de vérification, sécurité, contraintes d’architecture ;
