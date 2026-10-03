@@ -19,3 +19,11 @@ supabase/.temp/
 # Never commit private data
 backups/
 *.sql.gz
+*.dump
+*.backup
+*.bak
+backup/
+dumps/
+*.zip
+*.tar
+*.tgz
