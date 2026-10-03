@@ -23,7 +23,7 @@ Spec du premier Garage utilisable : [`docs/specs/0001-premier-garage-utilisable.
 
 ## Démarrage local
 
-Prérequis : Node 24 (voir `.nvmrc`), npm et, pour la base de données, Docker Desktop démarré.
+Prérequis : Node 24.15 ou plus récent (version de référence dans `.nvmrc`), npm et, pour la base de données, Docker Desktop démarré.
 
 ```bash
 npm ci
