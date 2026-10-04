@@ -99,7 +99,7 @@ fix/456-short-description
 - avant chaque commit non-WIP, appliquer le contrôle falsifiable et les règles de preuve de `docs/agents/evidence.md` ;
 - PR requise pour STANDARD et HIGH-RISK ;
 - titre de PR compatible Conventional Commits ;
-- description : utiliser `.github/pull_request_template.md` (Summary, Evidence, Independent review, Risks, Merge Danger, Human gate, Closure) avec le lien vers l’issue, et séparer preuves locales, CI, distantes et humaines ; gabarits d’issues dans `.github/ISSUE_TEMPLATE/` ;
+- description : utiliser `.github/pull_request_template.md` avec le lien vers l’issue, et séparer preuves locales, CI, distantes et humaines ; gabarits d’issues dans `.github/ISSUE_TEMPLATE/` ;
 - squash merge par défaut ;
 - branche `main` protégée avec PR et checks requis.
 
