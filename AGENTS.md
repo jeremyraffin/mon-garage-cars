@@ -1,9 +1,11 @@
 # Règles de travail des agents
 
-Ce projet suit l’`Agentic Software Engineering Workflow v0.1`. Lire aussi :
+Ce projet suit l’`Agentic Software Engineering Workflow v0.3.0`. La matrice d’affectation des modèles reste la version `v0.1` (`docs/agents/models.md`) : les deux versions sont indépendantes. Lire aussi :
 
 - `docs/agents/workflow.md` pour les règles propres au projet : environnements, langues, matrice de vérification, sécurité, contraintes d’architecture ;
 - `docs/agents/models.md` pour l’affectation des rôles ;
+- `docs/agents/phases.md` pour choisir la phase, son critère de sortie et le prochain rôle ;
+- `docs/agents/evidence.md` avant un commit non-WIP, une Review ou la clôture d’une PR ;
 - `docs/adr/` pour les décisions architecturales acceptées ;
 - `CONTEXT.md` pour le langage du domaine, à employer dans le code, les issues et les specs ;
 - `docs/specs/0001-premier-garage-utilisable.md` pour la spec du premier Garage utilisable ;
