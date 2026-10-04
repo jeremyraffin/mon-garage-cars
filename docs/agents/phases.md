@@ -50,31 +50,6 @@ Intake → Discovery → Architecture / Exploration → Spec + analyse de risque
 
 Une tâche monte de niveau dès que sa surface réelle l’exige. Elle ne redescend qu’après une décision humaine enregistrée.
 
-## Passage spécifique au bootstrap
-
-Le bootstrap suit une séquence explicite :
-
-1. Product / Spec produit le plan et obtient son adoption humaine.
-2. L’agent de bootstrap implémente uniquement ce plan et conserve `BOOTSTRAP_REQUIRED`.
-3. Implementation exécute le harness et complète la matrice locale, CI et distante de `evidence.md` ; Code Review publie son rapport, complété par Security Review si la surface le justifie.
-4. Implementation traite les findings puis repasse par Verification et Review.
-5. L’humain autorise explicitement le retrait de `BOOTSTRAP_REQUIRED`.
-6. L’agent de bootstrap retire le verrou dans un dernier changement ciblé et réexécute la vérification pertinente.
-7. L’humain autorise le merge après lecture du diff final et des preuves.
-
-Le bootstrap est prêt au merge lorsque le verrou est absent de la branche validée, que les preuves sont durables dans la PR et que le merge est autorisé. Il est terminé seulement après le merge, les smoke tests et la fermeture de l’issue. Une mention de fin dans le README ou le résumé de l’implémenteur ne remplace pas ces preuves.
-
-### États observables du bootstrap
-
-| État | Preuve observable | Rôle suivant |
-|---|---|---|
-| `BOOTSTRAP_REQUIRED` | verrou présent ; plan absent, non adopté ou en cours d’exécution | Product / Spec, puis agent de bootstrap après adoption |
-| `BOOTSTRAP_READY_FOR_REVIEW` | plan exécuté, harness vert, PR ouverte, verrou présent | Code Review ; Security Review si nécessaire |
-| `BOOTSTRAP_REVIEW_HANDLED` | rapports publiés, vérification repassée, aucun `BLOCKING` ou `IMPORTANT` non résolu, verrou présent | humain |
-| `BOOTSTRAP_UNLOCK_AUTHORIZED` | commentaire ou approbation humaine dans la PR autorisant explicitement le retrait | agent de bootstrap |
-| `BOOTSTRAP_UNLOCKED` | verrou absent du diff final et vérification pertinente verte | humain pour autorisation de merge |
-| `BOOTSTRAP_COMPLETE` | PR mergée, smoke tests réussis et issue fermée | Retro si signal utile, sinon prochaine tâche produit |
-
 ## Routage rapide
 
 - Idée encore floue → Product / Spec.
