@@ -1,0 +1,4 @@
+#!/bin/sh
+# Versioned pre-commit hook. Enable with: npm run hooks:install
+# Runs the fast checks only. It never replaces the CI.
+exec npm run --silent verify:fast

@@ -1,0 +1,11 @@
+.page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-xl);
+  line-height: 1.2;
+}

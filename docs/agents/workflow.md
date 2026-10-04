@@ -1,15 +1,24 @@
 # Workflow propre au projet
 
-> Remplacer tous les marqueurs `<À_ADAPTER>`, puis supprimer cette note.
-
 ## 1. Projet
 
-- Produit : `<À_ADAPTER>`
-- Utilisateurs principaux : `<À_ADAPTER>`
-- Stack : `<À_ADAPTER>`
-- Environnements : `<local / preview / staging / production>`
-- Documentation métier : `<chemins ou liens>`
-- Propriétaire humain des décisions : `<À_ADAPTER>`
+- Produit : Mon Garage Cars, catalogue visuel et sonore de miniatures *Cars* (voir `CONTEXT.md`).
+- Utilisateurs principaux : un Enfant de quatre ans en Mode Enfant (lecture seule), des Parents qui entretiennent le Garage, un Propriétaire.
+- Stack : client React, TypeScript et Vite (`src/`) ; Supabase pour Postgres, Auth, Storage et Edge Functions (`supabase/`) ; Playwright (`e2e/`) ; paquet npm unique, Node épinglé par `.nvmrc`. Décisions : ADR 0002, 0003 et 0005.
+- Documentation métier : `CONTEXT.md` (langage), `docs/specs/0001-premier-garage-utilisable.md` (spec), `docs/adr/` (décisions), `docs/agents/bootstrap-plan.md` (plan de bootstrap).
+- Propriétaire humain des décisions : Jérémy Raffin.
+- Langue : branches, commits et titres de PR en anglais, avec les termes du domaine en français (`feat: add Fiche draft creation`) ; issues, specs, ADR et corps de PR en français.
+
+### Environnements
+
+| Environnement | Contenu | Données |
+|---|---|---|
+| local | `npm run dev` et pile Supabase locale (Docker Desktop) | identités et données factices |
+| preview | Cloudflare Pages, un déploiement par PR | fixtures publiques, jamais le backend de production |
+| staging | projet Supabase temporaire, réservé aux évolutions sensibles | factices |
+| production | Cloudflare Pages depuis `main` après merge humain, et l'unique projet Supabase permanent | réelles, privées |
+
+Déploiement Cloudflare Pages : branche de production `main`, build `npm ci && npm run build`, sortie `dist`. Cloudflare lit la version de Node dans `.nvmrc`, seule source de vérité : aucune variable `NODE_VERSION` n'est définie côté Cloudflare, ni en Production ni en Aperçu (les deux environnements ont leurs propres variables). Une variable `NODE_VERSION` oubliée dans l'un d'eux passe avant `.nvmrc` : pendant le bootstrap, celle de l'environnement Aperçu a ramené les builds de PR à Node 24.13.1. Les dépendances exigent Node 24.15 ou plus récent et `engine-strict` fait échouer l'installation sur une version plus ancienne.
 
 ## 2. Classification locale
 
@@ -18,7 +27,7 @@
 - correction de texte ou de documentation ;
 - ajustement visuel local sans changement fonctionnel ;
 - renommage mécanique limité ;
-- `<À_ADAPTER>`.
+- ajustement d'une variable CSS ou d'un texte statique de la coquille, sans changement de comportement.
 
 ### Exemples STANDARD
 
@@ -27,7 +36,7 @@
 - logique métier non critique ;
 - bug non trivial ;
 - refactor cohérent multi-fichiers ;
-- `<À_ADAPTER>`.
+- nouveau composant du design system ou nouvelle route du client sans donnée privée.
 
 ### Exemples HIGH-RISK
 
@@ -37,7 +46,8 @@
 - paiement ou facturation ;
 - changement d’infrastructure ou de déploiement critique ;
 - intégration externe sensible ;
-- `<À_ADAPTER>`.
+- politique RLS, Edge Function, Session d'appareil, invitation de Parent, Archive portable ou restauration ;
+- workflow CI, secrets, variables d'environnement Cloudflare ou Supabase, branche de production.
 
 ## 3. Workflow par niveau
 
@@ -93,50 +103,52 @@ Ajouter des labels `area:*` seulement quand ils deviennent utiles.
 ### Branches, commits et PR
 
 ```text
-feat/123-courte-description
-fix/456-courte-description
+feat/123-short-description
+fix/456-short-description
 ```
 
 - Conventional Commits ; scope facultatif mais utile ;
 - PR requise pour STANDARD et HIGH-RISK ;
 - titre de PR compatible Conventional Commits ;
-- description : What, Why, Verification, Risks, lien vers l’issue ;
+- description : What, Why, Verification, Risks, Merge Danger (porte à sens unique ou réversible, rayon d’impact) et lien vers l’issue ; gabarit dans `.github/pull_request_template.md`, gabarits d’issues dans `.github/ISSUE_TEMPLATE/` ;
 - squash merge par défaut ;
 - branche `main` protégée avec PR et checks requis.
 
 ## 5. Verification Harness
 
 ```bash
-# Rapide : contrôles ciblés, idéalement moins de quelques minutes
-<À_ADAPTER: verify:fast>
+# Rapide : format et lint
+npm run verify:fast
 
-# Complet : format/lint + types + tests + build + E2E pertinent
-<À_ADAPTER: verify>
+# Complet : verify:fast + types + tests unitaires + pgTAP + build + E2E
+npm run verify
 
-# Sécurité : dépendances + secrets + SAST et contrôles pertinents
-<À_ADAPTER: verify:security>
+# Sécurité : verify + audit des dépendances + secrets + contrôles du build
+npm run verify:security
 ```
+
+Prérequis des commandes complètes : `npm ci`, `npm run e2e:install` (navigateurs Playwright) et Docker Desktop démarré. Une commande qui manque d'un prérequis échoue avec un message actionnable. Le contenu exact de chaque commande se lit dans les scripts de `package.json`.
 
 Matrice du projet :
 
 | Contrôle | FAST | STANDARD | HIGH-RISK | Commande/CI |
 |---|---:|---:|---:|---|
-| Format/lint ciblé | Oui | Oui | Oui | `<À_ADAPTER>` |
-| Typecheck | Si pertinent | Oui | Oui | `<À_ADAPTER>` |
-| Tests unitaires | Ciblés | Oui | Oui | `<À_ADAPTER>` |
-| Tests d’intégration | Non par défaut | Pertinents | Oui | `<À_ADAPTER>` |
-| Build | Si touché | Oui | Oui | `<À_ADAPTER>` |
-| E2E | Non par défaut | Parcours touché | Parcours critiques | `<À_ADAPTER>` |
-| SCA / dépendances | Non par défaut | CI | Oui | `<À_ADAPTER>` |
-| SAST / secrets | Non par défaut | Selon surface | Oui | `<À_ADAPTER>` |
+| Format/lint ciblé | Oui | Oui | Oui | `npm run verify:fast` |
+| Typecheck | Si pertinent | Oui | Oui | `npm run typecheck` |
+| Tests unitaires | Ciblés | Oui | Oui | `npm run test` |
+| Tests d’intégration | Non par défaut | Pertinents | Oui | `npm run db:test` (pgTAP) |
+| Build | Si touché | Oui | Oui | `npm run build` |
+| E2E | Non par défaut | Parcours touché | Parcours critiques | `npm run e2e` |
+| SCA / dépendances | Non par défaut | CI | Oui | `npm audit --audit-level=high`, Dependabot |
+| SAST / secrets | Non par défaut | Selon surface | Oui | `npm run secrets`, `npm run security:local`, CodeQL |
 
 ## 6. E2E
 
-- Parcours critiques : `<À_ADAPTER>`
-- Commande locale : `<À_ADAPTER>`
-- Environnement de CI : `<À_ADAPTER>`
-- Données de test : `<À_ADAPTER>`
-- Artefacts en cas d’échec : traces, captures, vidéo, logs `<À_ADAPTER>`
+- Parcours critiques : aujourd'hui le chargement direct de `/` et `/garage` et le lien de la Vitrine vers le Garage ; chaque tranche produit ajoute ses parcours (publication d'une Fiche, lecture en Mode Enfant, Session d'appareil, matrice des rôles).
+- Commande locale : `npm run e2e` sur Chromium et WebKit, après `npm run e2e:install`.
+- Environnement de CI : GitHub Actions sur `ubuntu-24.04`, via `npm run verify:security`.
+- Données de test : fixtures factices uniquement, jamais de photo ni de description du Garage réel.
+- Artefacts en cas d’échec : traces, captures et vidéos Playwright conservées, téléversées par la CI pendant 7 jours.
 - Règle anti-flaky : ne jamais relancer silencieusement jusqu’au vert ; diagnostiquer ou isoler explicitement.
 
 ## 7. Sécurité
@@ -150,13 +162,16 @@ Pour un dépôt public GitHub, activer au minimum selon la compatibilité du pro
 
 Contrôles supplémentaires du projet :
 
-- SCA : `<outil/commande>`
-- SAST : `<outil/commande>`
-- secrets : `<outil/commande>`
-- conteneurs/IaC : `<outil/commande ou N/A>`
-- SBOM : `<outil/commande ou N/A>`
-- DAST : `<outil/commande ou N/A>`
-- procédure de divulgation : `<SECURITY.md ou lien>`
+- SCA : `npm audit --audit-level=high` dans `verify:security` ; Dependabot hebdomadaire, délai de 7 jours avant de proposer une version récente, mises à jour majeures non groupées.
+- SAST : CodeQL, workflow `.github/workflows/codeql.yml` (JavaScript/TypeScript et GitHub Actions) sur chaque PR, sur `main` et chaque lundi ; résultats dans le code scanning GitHub.
+- secrets : secretlint (`npm run secrets`) avant commit et en CI ; secret scanning et push protection côté GitHub.
+- contrôles du build : `npm run security:local` (aucun `.env` ni sauvegarde suivi par Git, aucune clé secrète dans `dist/`).
+- conteneurs/IaC : N/A
+- SBOM : N/A
+- DAST : N/A
+- procédure de divulgation : `SECURITY.md` (signalement privé GitHub).
+
+Chaîne d'approvisionnement : versions npm exactes (`save-exact`), actions GitHub épinglées par SHA de commit, runner `ubuntu-24.04`. Toute nouvelle dépendance significative passe par un human gate.
 
 Ne jamais placer de secret réel dans un prompt, une issue, un log, un fixture ou un dépôt.
 
@@ -172,11 +187,11 @@ Avant une nouvelle abstraction :
 
 Contraintes locales :
 
-- limites de modules : `<À_ADAPTER>`
-- dépendances autorisées/interdites : `<À_ADAPTER>`
-- règles de compatibilité : `<À_ADAPTER>`
-- exigences de performance : `<À_ADAPTER>`
-- observabilité : `<À_ADAPTER>`
+- limites de modules : un paquet unique ; `src/` pour le client, `supabase/` pour le backend versionné, `e2e/` pour les parcours transversaux, `public/` pour les seuls éléments publics (ADR 0005). `tsc` vérifie aussi `supabase/functions/` ; une Edge Function qui exige Deno (imports `npm:` ou `jsr:`) demande une décision sur son typage. Les lectures passent par Supabase sous RLS, les mutations par les Edge Functions (ADR 0003).
+- dépendances : celles de `package.json` ; variables CSS et CSS Modules comme seule couche de style. Une bibliothèque UI, Storybook, un framework CSS, un second paquet ou un outil d'analytics demandent une nouvelle décision.
+- règles de compatibilité : Safari iPhone et iPad en priorité, Chrome Android, puis navigateurs de bureau récents ; tests automatisés sur Chromium et WebKit ; Node 24.15 ou plus récent.
+- exigences de performance : aucune cible chiffrée dans la spec 0001 ; chaque spec de tranche fixe les siennes.
+- observabilité : aucun analytics comportemental ; aucune photo, description, jeton ni secret dans les journaux ou chez un outil tiers ; diagnostic technique détaillé réservé à l'Espace Parent.
 
 ## 9. ADR
 

@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+playwright-report
+test-results
+package-lock.json
+.agents
+skills-lock.json
+docs
+CONTEXT.md
+AGENTS.md
+CLAUDE.md
+.claude

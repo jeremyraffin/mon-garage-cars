@@ -1,0 +1,2 @@
+-- Local seed data. Fictitious identities and data only: never real photos,
+-- real e-mail addresses or anything from the private Garage.

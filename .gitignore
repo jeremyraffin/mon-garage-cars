@@ -1,0 +1,29 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.local
+.DS_Store
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Never commit private data
+backups/
+*.sql.gz
+*.dump
+*.backup
+*.bak
+backup/
+dumps/
+*.zip
+*.tar
+*.tgz

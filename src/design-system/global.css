@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-link);
+  display: inline-block;
+  min-height: var(--tap-target-min);
+  line-height: var(--tap-target-min);
+}
