@@ -51,21 +51,9 @@ Déploiement Cloudflare Pages : branche de production `main`, build `npm ci && n
 
 ## 3. Workflow par niveau
 
-```text
-FAST
-micro-spec → implementation → verify:fast → petite PR/merge
+Les phases, critères de sortie, rôles conducteurs et boucles de correction sont définis dans `docs/agents/phases.md`. Le présent document adapte leurs contrôles et exemples au projet sans redéfinir leurs transitions.
 
-STANDARD
-grill si utile → spec → human gate si significative → implementation
-→ verify → review indépendante → human review → squash merge
-
-HIGH-RISK
-grill + exploration → spec + analyse de risque + ADR si utile
-→ human gate → petits tickets → implementation → verify complet
-→ sécurité → review indépendante → human gate → merge
-```
-
-Une tâche peut monter de niveau en cours d’exécution. Elle ne redescend pas sans décision explicite.
+Une tâche peut monter de niveau en cours d’exécution. Elle ne redescend pas sans décision humaine enregistrée.
 
 ## 4. GitHub
 
@@ -108,13 +96,16 @@ fix/456-short-description
 ```
 
 - Conventional Commits ; scope facultatif mais utile ;
+- avant chaque commit non-WIP, appliquer le contrôle falsifiable et les règles de preuve de `docs/agents/evidence.md` ;
 - PR requise pour STANDARD et HIGH-RISK ;
 - titre de PR compatible Conventional Commits ;
-- description : What, Why, Verification, Risks, Merge Danger (porte à sens unique ou réversible, rayon d’impact) et lien vers l’issue ; gabarit dans `.github/pull_request_template.md`, gabarits d’issues dans `.github/ISSUE_TEMPLATE/` ;
+- description : utiliser `.github/pull_request_template.md` avec le lien vers l’issue, et séparer preuves locales, CI, distantes et humaines ; gabarits d’issues dans `.github/ISSUE_TEMPLATE/` ;
 - squash merge par défaut ;
 - branche `main` protégée avec PR et checks requis.
 
 ## 5. Verification Harness
+
+Les commandes ci-dessous prouvent la couche locale. Elles ne remplacent ni les checks CI, ni le preflight et les contrôles distants définis dans `docs/agents/evidence.md`.
 
 ```bash
 # Rapide : format et lint

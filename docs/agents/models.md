@@ -32,7 +32,7 @@ Ce document décrit les capacités attendues et fige l’affectation v0.1 déjà
 | Code Review | Codex — GPT-5.6 Sol | High | review indépendante du diff sur STANDARD/HIGH-RISK |
 | Security Review | Codex — GPT-5.6 Sol | High | uniquement lorsque le risque le justifie |
 | Retro / Steering | ChatGPT — GPT-5.6 Sol | High | rétro et amélioration du workflow |
-| Release | Phase 2 — non affecté | — | le rôle reste humain en v0.1 |
+| Release | Future version — non affecté | — | le rôle reste humain en v0.1 |
 
 ### Règles d’escalade
 
@@ -42,20 +42,9 @@ Ce document décrit les capacités attendues et fige l’affectation v0.1 déjà
 - Security Review n’est pas une étape obligatoire sur FAST et n’est ajoutée sur STANDARD que si la surface le justifie.
 - Si un modèle n’est pas disponible, arrêter le dispatch et documenter temporairement son remplaçant ; ne pas réécrire toute la matrice dans l’urgence.
 
-### Passage entre les outils
+### Passage entre les rôles
 
-En v0.1, le routage reste manuel :
-
-```text
-Claude Code / Sonnet 5.5
-→ implémentation + tests + résultats du harness
-→ transmission de la spec et du diff
-→ Codex / GPT-5.6 Sol
-→ review indépendante
-→ validation humaine
-```
-
-Claude Code n’est pas supposé lancer Codex automatiquement, et Codex n’est pas supposé lancer Claude Code. Une orchestration automatique pourra être évaluée en phase 2.
+Le routage reste manuel en v0.1. Les phases, critères de sortie et handoffs sont définis dans `phases.md` ; le présent document reste la source de vérité pour l’affectation des modèles. Claude Code n’est pas supposé lancer Codex automatiquement, et Codex n’est pas supposé lancer Claude Code. Une orchestration automatique pourra être évaluée dans une future version.
 
 ## Contrat par rôle
 
@@ -102,7 +91,7 @@ Ne pas réévaluer les modèles pendant le bootstrap. Ouvrir une révision seule
 - après au moins trois tâches STANDARD terminées ;
 - après un échec récurrent attribuable au modèle ;
 - si coût, latence ou disponibilité deviennent problématiques ;
-- lors du passage à la phase 2 pour le Release Agent.
+- lors d’une future version attribuant le rôle Release à un agent.
 
 Procédure :
 
