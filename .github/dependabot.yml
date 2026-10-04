@@ -12,6 +12,10 @@ updates:
       minor-and-patch:
         update-types: [minor, patch]
     # Major updates are not grouped: each one gets its own pull request.
+    ignore:
+      # Node types follow the Node major of the project (see .nvmrc).
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
