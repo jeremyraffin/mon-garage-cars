@@ -1,0 +1,10 @@
+.flag {
+  height: 1.125rem;
+  background: conic-gradient(
+      var(--color-check-a) 25%,
+      var(--color-check-b) 0 50%,
+      var(--color-check-a) 0 75%,
+      var(--color-check-b) 0
+    )
+    0 0 / 1.125rem 1.125rem;
+}

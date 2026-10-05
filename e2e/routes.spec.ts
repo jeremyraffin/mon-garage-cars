@@ -5,6 +5,112 @@ test('direct load of the Vitrine at /', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Mon Garage de Miniatures' }),
   ).toBeVisible();
+  await expect(
+    page.getByText('sans affiliation avec Disney/Pixar'),
+  ).toBeVisible();
+  await expect(page.getByRole('listitem')).toHaveCount(8);
+});
+
+test('the Vitrine has no horizontal overflow at 320 px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto('/');
+  await expect(page.getByRole('listitem')).toHaveCount(8);
+  const overflow = await page.evaluate(
+    () =>
+      document.documentElement.scrollWidth -
+      document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
+const layouts = [
+  { width: 320, columns: 2 },
+  { width: 768, columns: 3 },
+  { width: 1280, columns: 4 },
+];
+
+for (const { width, columns } of layouts) {
+  test(`the Vitrine keeps eight readable cards at ${width} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    const cards = page.getByRole('listitem');
+    await expect(cards).toHaveCount(8);
+
+    for (const card of await cards.all()) {
+      await card.scrollIntoViewIfNeeded();
+      await expect(card.getByRole('img')).toHaveAttribute('alt', /\S/);
+      const name = card.locator('div span').last();
+      await expect(name).toBeVisible();
+      const fontSize = await name.evaluate((el) =>
+        parseFloat(getComputedStyle(el).fontSize),
+      );
+      expect(fontSize).toBeGreaterThanOrEqual(16);
+      const badge = card.getByText('Nouveau');
+      if (await badge.count()) {
+        const badgeSize = await badge.evaluate((el) =>
+          parseFloat(getComputedStyle(el).fontSize),
+        );
+        expect(badgeSize).toBeGreaterThanOrEqual(14);
+      }
+      const box = await card.boundingBox();
+      expect(box?.x).toBeGreaterThanOrEqual(0);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(width);
+    }
+
+    const lefts = await cards.evaluateAll((items) =>
+      items.map((item) => Math.round(item.getBoundingClientRect().left)),
+    );
+    expect(new Set(lefts).size).toBe(columns);
+  });
+}
+
+test('the Vitrine CTA is at least 48 px and reachable by keyboard', async ({
+  page,
+  browserName,
+}) => {
+  await page.goto('/');
+  const cta = page.getByRole('link', { name: 'Aller au Garage' });
+  const box = await cta.boundingBox();
+  expect(box?.width).toBeGreaterThanOrEqual(48);
+  expect(box?.height).toBeGreaterThanOrEqual(48);
+  // WebKit on macOS skips links on Tab by default (Option+Tab reaches them).
+  const tabKey =
+    browserName === 'webkit' && process.platform === 'darwin'
+      ? 'Alt+Tab'
+      : 'Tab';
+  await page.keyboard.press(tabKey);
+  await expect(cta).toBeFocused();
+  const outline = await cta.evaluate((el) => {
+    const style = getComputedStyle(el);
+    return {
+      style: style.outlineStyle,
+      width: parseFloat(style.outlineWidth),
+    };
+  });
+  expect(outline.style).not.toBe('none');
+  expect(outline.width).toBeGreaterThanOrEqual(2);
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/garage$/);
+});
+
+test('photos fully below the first screen are lazy-loaded', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  await expect(page.getByRole('listitem')).toHaveCount(8);
+  const photos = await page.getByRole('img').evaluateAll((images) =>
+    images.map((image) => ({
+      top: image.getBoundingClientRect().top,
+      loading: image.getAttribute('loading'),
+    })),
+  );
+  expect(photos).toHaveLength(8);
+  const offscreen = photos.filter((photo) => photo.top >= 568);
+  expect(offscreen.length).toBeGreaterThan(0);
+  for (const photo of offscreen) expect(photo.loading).toBe('lazy');
 });
 
 test('direct load of the Garage shell at /garage', async ({ page }) => {
