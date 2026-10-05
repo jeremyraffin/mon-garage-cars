@@ -23,6 +23,49 @@ test('the Vitrine has no horizontal overflow at 320 px', async ({ page }) => {
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
+const layouts = [
+  { width: 320, columns: 2 },
+  { width: 768, columns: 3 },
+  { width: 1280, columns: 4 },
+];
+
+for (const { width, columns } of layouts) {
+  test(`the Vitrine keeps eight readable cards at ${width} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    const cards = page.getByRole('listitem');
+    await expect(cards).toHaveCount(8);
+
+    for (const card of await cards.all()) {
+      await card.scrollIntoViewIfNeeded();
+      await expect(card.getByRole('img')).toHaveAttribute('alt', /\S/);
+      const name = card.locator('div span').last();
+      await expect(name).toBeVisible();
+      const fontSize = await name.evaluate((el) =>
+        parseFloat(getComputedStyle(el).fontSize),
+      );
+      expect(fontSize).toBeGreaterThanOrEqual(16);
+      const badge = card.getByText('Nouveau');
+      if (await badge.count()) {
+        const badgeSize = await badge.evaluate((el) =>
+          parseFloat(getComputedStyle(el).fontSize),
+        );
+        expect(badgeSize).toBeGreaterThanOrEqual(14);
+      }
+      const box = await card.boundingBox();
+      expect(box?.x).toBeGreaterThanOrEqual(0);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(width);
+    }
+
+    const lefts = await cards.evaluateAll((items) =>
+      items.map((item) => Math.round(item.getBoundingClientRect().left)),
+    );
+    expect(new Set(lefts).size).toBe(columns);
+  });
+}
+
 test('the Vitrine CTA is at least 48 px and reachable by keyboard', async ({
   page,
   browserName,

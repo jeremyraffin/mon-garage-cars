@@ -62,7 +62,7 @@
   background: var(--color-cta-bg);
   color: var(--color-cta-text);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .srOnly {
