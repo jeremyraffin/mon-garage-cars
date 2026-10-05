@@ -24,25 +24,24 @@ test('the Vitrine is served at / with its eight Fiches', async ({
   expect(foreign).toEqual([]);
 });
 
-test('the foreign-request guard flags a look-alike origin', async ({
+test('the foreign-request listener reports a request to another origin', async ({
   page,
   baseURL,
 }) => {
-  const origin = new URL(baseURL ?? '').origin;
-  const foreign = collectForeignRequests(page, origin);
-  // Valid whatever the target: with or without port, http or https.
-  const lookalikeUrl = new URL('/pixel', origin);
-  lookalikeUrl.hostname = `${lookalikeUrl.hostname}.evil.example`;
-  const lookalike = lookalikeUrl.href;
-  await page.route(lookalike, (route) => route.fulfill({ body: '' }));
+  const foreign = collectForeignRequests(page, new URL(baseURL ?? '').origin);
+  // A fixed external origin, intercepted so nothing leaves the browser: it is
+  // foreign for any target (host name, IPv4 or IPv6, with or without port).
+  // Look-alike hosts are covered by the isForeign test below.
+  const external = 'https://tracker.invalid/pixel';
+  await page.route(external, (route) => route.fulfill({ body: '' }));
 
   await page.goto('/');
   await page.evaluate(
     (url) => fetch(url, { mode: 'no-cors' }).catch(() => undefined),
-    lookalike,
+    external,
   );
 
-  expect(foreign).toEqual([lookalike]);
+  expect(foreign).toEqual([external]);
 });
 
 test('isForeign compares exact origins', () => {
@@ -58,6 +57,8 @@ test('isForeign compares exact origins', () => {
   expect(isForeign('http://localhost:4175/a', 'http://localhost:4174')).toBe(
     true,
   );
+  expect(isForeign('http://[::1]:4175/a', 'http://[::1]:4175')).toBe(false);
+  expect(isForeign('http://[::1]:4176/a', 'http://[::1]:4175')).toBe(true);
 });
 
 test('the CTA leads to the neutral Garage shell', async ({ page, baseURL }) => {
