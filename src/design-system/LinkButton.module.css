@@ -1,0 +1,14 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+  padding: 0 var(--space-5);
+  border-radius: 999px;
+  background: var(--color-cta-bg);
+  color: var(--color-cta-text);
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+}

@@ -4,8 +4,21 @@
   padding: var(--space-6) var(--space-4);
 }
 
+.wide {
+  max-width: 68rem;
+}
+
 .title {
   margin: 0 0 var(--space-4);
   font-size: var(--font-size-xl);
   line-height: 1.2;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 8vw, 4rem);
+  line-height: 1;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
