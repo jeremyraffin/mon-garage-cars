@@ -53,7 +53,7 @@ describe('Vitrine page', () => {
     expect(images).toHaveLength(8);
     images.forEach((image, index) => {
       expect(image).toHaveAttribute('alt', expect.stringMatching(/\S/));
-      expect(image).toHaveAttribute('loading', index < 4 ? 'eager' : 'lazy');
+      expect(image).toHaveAttribute('loading', index < 2 ? 'eager' : 'lazy');
     });
     expect(
       screen.getByRole('img', { name: 'Photo de la miniature de Luigi' }),

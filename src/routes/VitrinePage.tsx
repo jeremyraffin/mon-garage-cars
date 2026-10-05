@@ -5,7 +5,7 @@ import { ShowcaseCard } from '../vitrine/ShowcaseCard';
 import { showcaseFiches } from '../vitrine/showcaseFiches';
 import styles from './VitrinePage.module.css';
 
-const EAGER_PHOTOS = 4;
+const EAGER_PHOTOS = 2;
 
 export function VitrinePage() {
   return (
