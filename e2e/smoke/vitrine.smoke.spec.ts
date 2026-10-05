@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { collectForeignRequests } from './foreignRequests';
+import { collectForeignRequests, isForeign } from './foreignRequests';
 
 test('the Vitrine is served at / with its eight Fiches', async ({
   page,
@@ -30,7 +30,10 @@ test('the foreign-request guard flags a look-alike origin', async ({
 }) => {
   const origin = new URL(baseURL ?? '').origin;
   const foreign = collectForeignRequests(page, origin);
-  const lookalike = `${origin}.evil.example/pixel`;
+  // Valid whatever the target: with or without port, http or https.
+  const lookalikeUrl = new URL('/pixel', origin);
+  lookalikeUrl.hostname = `${lookalikeUrl.hostname}.evil.example`;
+  const lookalike = lookalikeUrl.href;
   await page.route(lookalike, (route) => route.fulfill({ body: '' }));
 
   await page.goto('/');
@@ -40,6 +43,21 @@ test('the foreign-request guard flags a look-alike origin', async ({
   );
 
   expect(foreign).toEqual([lookalike]);
+});
+
+test('isForeign compares exact origins', () => {
+  const origin = 'https://mon-garage-cars.pages.dev';
+  expect(isForeign(`${origin}/assets/a.jpg`, origin)).toBe(false);
+  expect(isForeign('data:image/png;base64,AAAA', origin)).toBe(false);
+  expect(isForeign(`${origin}.evil.example/pixel`, origin)).toBe(true);
+  expect(isForeign('https://fonts.googleapis.com/css', origin)).toBe(true);
+  expect(isForeign('http://mon-garage-cars.pages.dev/', origin)).toBe(true);
+  expect(isForeign('http://localhost:4174/a', 'http://localhost:4174')).toBe(
+    false,
+  );
+  expect(isForeign('http://localhost:4175/a', 'http://localhost:4174')).toBe(
+    true,
+  );
 });
 
 test('the CTA leads to the neutral Garage shell', async ({ page, baseURL }) => {
