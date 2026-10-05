@@ -116,6 +116,9 @@ npm run verify
 
 # Sécurité : verify + audit des dépendances + secrets + contrôles du build
 npm run verify:security
+
+# Post-merge : smoke test en lecture seule de la production (ou de l'URL passée)
+npm run smoke [-- <url>]
 ```
 
 Prérequis des commandes complètes : `npm ci`, `npm run e2e:install` (navigateurs Playwright) et Docker Desktop démarré. Une commande qui manque d'un prérequis échoue avec un message actionnable. Le contenu exact de chaque commande se lit dans les scripts de `package.json`.
@@ -140,6 +143,7 @@ Matrice du projet :
 - Environnement de CI : GitHub Actions sur `ubuntu-24.04`, via `npm run verify:security`.
 - Données de test : fixtures factices uniquement, jamais de photo ni de description du Garage réel.
 - Artefacts en cas d’échec : traces, captures et vidéos Playwright conservées, téléversées par la CI pendant 7 jours.
+- Smoke test post-merge : `npm run smoke` rejoue en lecture seule les parcours critiques sur la production (`https://mon-garage-cars.pages.dev/`), ou sur l'URL passée (`npm run smoke -- <url>`), sur Chromium et WebKit. Il ne fait pas partie de `verify`. Responsable : le propriétaire humain (Jérémy Raffin), qui assume le rôle Release en v0.1 ; un agent peut l'exécuter, mais le résultat est publié et validé par l'humain. Chaque tranche qui ajoute un parcours critique ajoute son contrôle dans `e2e/smoke/`, sans donnée privée.
 - Règle anti-flaky : ne jamais relancer silencieusement jusqu’au vert ; diagnostiquer ou isoler explicitement.
 
 ## 7. Sécurité

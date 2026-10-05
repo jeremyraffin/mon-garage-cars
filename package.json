@@ -20,6 +20,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "smoke": "node scripts/smoke.mjs",
     "e2e:install": "playwright install chromium webkit",
     "security:local": "node scripts/security-checks.mjs",
     "hooks:install": "git config core.hooksPath .githooks",

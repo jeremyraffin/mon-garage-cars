@@ -4,6 +4,7 @@ const port = 4173;
 
 export default defineConfig({
   testDir: 'e2e',
+  testIgnore: 'smoke/**',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   // No silent retries: a flaky test must be diagnosed or isolated explicitly.
