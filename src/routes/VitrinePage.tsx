@@ -13,8 +13,9 @@ export function VitrinePage() {
       <Checkerboard />
       <Page title="Mon Garage de Miniatures" variant="showcase">
         <p className={styles.intro}>
-          Une petite collection de miniatures Cars, photographiées une par une
-          et rassemblées ici pour le plaisir de les regarder.
+          Entrez dans le garage ! Des pilotes de la Piston Cup aux habitants de
+          Radiator Springs, voici une sélection de ma collection de miniatures{' '}
+          <em>Cars</em>, voiture par voiture.
         </p>
         <p className={styles.notice}>
           Projet personnel, non commercial et sans affiliation avec

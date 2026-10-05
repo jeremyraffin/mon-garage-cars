@@ -33,9 +33,7 @@ describe('Vitrine page', () => {
         'Projet personnel, non commercial et sans affiliation avec Disney/Pixar.',
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/petite collection de miniatures/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Entrez dans le garage/)).toBeInTheDocument();
   });
 
   it('lists exactly the eight approved Fiches, in order', () => {
