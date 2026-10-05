@@ -16,7 +16,7 @@
 | local | `npm run dev` et pile Supabase locale (Docker Desktop) | identités et données factices |
 | preview | Cloudflare Pages, un déploiement par PR | fixtures publiques, jamais le backend de production |
 | staging | projet Supabase temporaire, réservé aux évolutions sensibles | factices |
-| production | Cloudflare Pages depuis `main` après merge humain, et l'unique projet Supabase permanent | réelles, privées |
+| production | Cloudflare Pages depuis `main` après merge humain (`https://mon-garage-cars.pages.dev/`), et l'unique projet Supabase permanent | réelles, privées |
 
 Déploiement Cloudflare Pages : branche de production `main`, build `npm ci && npm run build`, sortie `dist`. Cloudflare lit la version de Node dans `.nvmrc`, seule source de vérité : aucune variable `NODE_VERSION` n'est définie côté Cloudflare, ni en Production ni en Aperçu (les deux environnements ont leurs propres variables). Une variable `NODE_VERSION` oubliée dans l'un d'eux passe avant `.nvmrc` : pendant le bootstrap, celle de l'environnement Aperçu a ramené les builds de PR à Node 24.13.1. Les dépendances exigent Node 24.15 ou plus récent et `engine-strict` fait échouer l'installation sur une version plus ancienne.
 
