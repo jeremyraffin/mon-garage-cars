@@ -48,6 +48,10 @@ _Éviter_ : administrateur, contributeur
 Le Parent responsable du Garage. Il peut en plus inviter ou retirer d’autres Parents, gérer les sauvegardes et restaurations, et supprimer définitivement une Fiche archivée. Le Garage possède initialement un seul Propriétaire.
 _Éviter_ : super-administrateur, propriétaire du compte Supabase
 
+**Appartenance au Garage** :
+Le lien durable entre une personne et un Garage, avec son rôle de Propriétaire ou de Parent. Seule une appartenance active donne accès au Garage ; une appartenance retirée ou historique conserve la trace de ses actions sans rien autoriser. L’appartenance identifie les auteurs des Fiches sans révéler l’identité de la personne.
+_Éviter_ : compte, utilisateur, membre
+
 **Espace Parent** :
 La zone protégée dans laquelle un Parent entretient le Garage et valide les Brouillons. Son ouverture nécessite une authentification adulte récente.
 _Éviter_ : back-office, panneau d’administration
