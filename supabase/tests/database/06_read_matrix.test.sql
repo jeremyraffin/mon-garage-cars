@@ -2,7 +2,10 @@
 -- Identities: owner A (…a1), active Parent A (…a2), removed Parent A (…a3),
 -- owner B (…b1), active Parent B (…b2), stranger without appartenance (…c1).
 begin;
-select plan(38);
+select plan(40);
+
+-- The two helper functions below are repeated in 07_storage.test.sql on purpose:
+-- pg_temp objects live and die with each test file's transaction.
 
 -- Runs a one-column query as a client role and returns its sorted values.
 create function pg_temp.read_as(who text, claims jsonb, q text)
@@ -185,23 +188,37 @@ select is(
     'select right(id::text, 2) from public.fiches'),
   'a1,a2,a3', 'and gets it back when reinstated');
 
--- Policy helpers called directly return only the caller's own Garages --------------
-select is(
-  pg_temp.read_as('authenticated', pg_temp.jwt('20000000-0000-4000-8000-0000000000a2'),
-    'select right(g::text, 1) from private.my_garage_ids() g'),
-  'a', 'my_garage_ids returns only the Garage of the caller');
-select is(
-  pg_temp.read_as('authenticated', pg_temp.jwt('20000000-0000-4000-8000-0000000000a2'),
-    'select right(g::text, 1) from private.my_owned_garage_ids() g'),
-  '', 'my_owned_garage_ids returns nothing for a Parent');
-select is(
-  pg_temp.read_as('authenticated', pg_temp.jwt('20000000-0000-4000-8000-0000000000c1'),
-    'select g::text from private.my_garage_ids() g'),
-  '', 'my_garage_ids returns nothing for a stranger');
-select is(
-  pg_temp.read_as('authenticated', pg_temp.jwt('20000000-0000-4000-8000-0000000000a1'),
-    'select right(g::text, 1) from private.my_owned_garage_ids() g'),
-  'a', 'my_owned_garage_ids returns the Garage of its Propriétaire');
+-- Policy helpers: the policies evaluate them, but a client cannot call them.
+select throws_ok(
+  $$ set local role authenticated;
+     select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-0000000000a2","role":"authenticated"}', true);
+     select * from private.my_garage_ids(); reset role $$,
+  '42501', null, 'a Parent cannot call my_garage_ids directly');
+select throws_ok(
+  $$ set local role authenticated;
+     select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
+     select * from private.my_owned_garage_ids(); reset role $$,
+  '42501', null, 'the Propriétaire cannot call my_owned_garage_ids directly');
+select throws_ok(
+  $$ set local role authenticated;
+     select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-0000000000c1","role":"authenticated"}', true);
+     select * from private.my_garage_ids(); reset role $$,
+  '42501', null, 'a stranger cannot call my_garage_ids directly');
+select throws_ok(
+  $$ set local role anon; select * from private.my_owned_garage_ids(); reset role $$,
+  '42501', null, 'anon cannot call my_owned_garage_ids');
+
+-- auth_user_id is never returned to a client, the Propriétaire included.
+select throws_ok(
+  $$ set local role authenticated;
+     select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
+     select auth_user_id from public.appartenances_garage; reset role $$,
+  '42501', null, 'the Propriétaire cannot read auth_user_id');
+select throws_ok(
+  $$ set local role authenticated;
+     select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-0000000000a2","role":"authenticated"}', true);
+     select * from public.appartenances_garage; reset role $$,
+  '42501', null, 'select * on appartenances_garage is refused: columns must be named');
 
 select * from finish();
 rollback;

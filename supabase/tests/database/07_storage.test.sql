@@ -3,6 +3,9 @@
 begin;
 select plan(18);
 
+-- read_as and jwt are repeated from 06_read_matrix.test.sql on purpose:
+-- pg_temp objects live and die with each test file's transaction.
+
 create function pg_temp.read_as(who text, claims jsonb, q text)
 returns text language plpgsql as $$
 declare result text;

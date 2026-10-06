@@ -1,10 +1,11 @@
 -- Client surface after #18: SELECT only, on five tables, to authenticated only.
+-- appartenances_garage is granted by column, without auth_user_id.
 -- No mutation, no truncate, no grant to anon or PUBLIC, and no function a
 -- client may call except the two argument-less policy helpers. Any new table in
 -- public must enable RLS and must not be granted to a client role: this file
 -- turns red otherwise.
 begin;
-select plan(32);
+select plan(37);
 
 -- RLS coverage ---------------------------------------------------------------
 select is(
@@ -29,21 +30,50 @@ select is(
 select is((select count(*) from pg_policies where schemaname = 'public' and tablename = 'garages'),
   0::bigint, 'garages has no policy: it stays closed to clients');
 
+select is(
+  (select string_agg(concat_ws(':', tablename, policyname, cmd, roles::text, permissive,
+     case when permissive = 'RESTRICTIVE' then coalesce(qual, '-') || ':' || coalesce(with_check, '-') else '*' end),
+     ' ' order by policyname)
+   from pg_policies where schemaname = 'storage'),
+  'objects:fiche_photos_objects_select:SELECT:{authenticated}:PERMISSIVE:* '
+  || 'objects:no_client_delete:DELETE:{anon,authenticated}:RESTRICTIVE:false:- '
+  || 'objects:no_client_insert:INSERT:{anon,authenticated}:RESTRICTIVE:-:false '
+  || 'objects:no_client_update:UPDATE:{anon,authenticated}:RESTRICTIVE:false:false',
+  'storage.objects holds exactly one read policy and three restrictive mutation refusals');
+select is((select count(*) from pg_policies where schemaname = 'storage' and tablename <> 'objects'),
+  0::bigint, 'no other Storage table has a policy');
+
 -- Table grants -------------------------------------------------------------------
 select is(
   (select string_agg(concat_ws(':', table_name, grantee, privilege_type), ' '
                      order by table_name, grantee, privilege_type)
    from information_schema.role_table_grants
    where table_schema = 'public' and grantee in ('anon', 'authenticated', 'PUBLIC')),
-  'appartenances_garage:authenticated:SELECT fiche_oeuvres:authenticated:SELECT '
-  || 'fiche_photos:authenticated:SELECT fiches:authenticated:SELECT '
-  || 'oeuvres:authenticated:SELECT',
-  'clients hold SELECT on the five matrix tables and nothing else');
+  'fiche_oeuvres:authenticated:SELECT fiche_photos:authenticated:SELECT '
+  || 'fiches:authenticated:SELECT oeuvres:authenticated:SELECT',
+  'clients hold a table-level SELECT on four matrix tables and nothing else');
 select is(
-  (select count(*) from information_schema.role_column_grants
-   where table_schema = 'public' and grantee in ('anon', 'authenticated', 'PUBLIC')
-     and privilege_type <> 'SELECT'),
-  0::bigint, 'no column-level mutation grant');
+  (select string_agg(t.relname || ':' || t.readable || '/' || t.total, ' ' order by t.relname)
+   from (select c.relname,
+           count(*) filter (where has_column_privilege('authenticated', c.oid, a.attnum, 'select')) as readable,
+           count(*) as total
+         from pg_class c join pg_namespace n on n.oid = c.relnamespace
+         join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
+         where n.nspname = 'public' and c.relkind = 'r'
+         group by c.relname) t),
+  'appartenances_garage:5/6 fiche_oeuvres:4/4 fiche_photos:6/6 fiches:18/18 garages:0/2 oeuvres:4/4',
+  'authenticated reads every column of four tables, appartenances_garage without auth_user_id, and garages none');
+select is(
+  (select count(*)
+   from pg_class c join pg_namespace n on n.oid = c.relnamespace
+   join pg_attribute a on a.attrelid = c.oid and a.attnum > 0 and not a.attisdropped
+   cross join (values ('anon'), ('authenticated')) r(role)
+   where n.nspname = 'public' and c.relkind = 'r'
+     and (has_column_privilege(r.role, c.oid, a.attnum, 'insert')
+       or has_column_privilege(r.role, c.oid, a.attnum, 'update')
+       or has_column_privilege(r.role, c.oid, a.attnum, 'references')
+       or (r.role = 'anon' and has_column_privilege(r.role, c.oid, a.attnum, 'select')))),
+  0::bigint, 'no column-level mutation or reference right, and no column read for anon');
 select is(
   (select count(*) from pg_class c join pg_namespace n on n.oid = c.relnamespace
    where n.nspname = 'public' and c.relkind in ('S', 'v', 'm', 'f')
@@ -72,6 +102,8 @@ select is(
    where n.nspname = 'public'),
   0::bigint, 'public exposes no function (no RPC surface)');
 select ok(not has_schema_privilege('anon', 'private', 'usage'), 'anon cannot use the private schema');
+select ok(not has_schema_privilege('authenticated', 'private', 'usage'),
+  'authenticated cannot use the private schema, so no direct call of a helper');
 select ok(not has_function_privilege('authenticated', 'private.assert_fiche_has_thumbnail()', 'execute'),
   'authenticated cannot call a trigger function');
 select ok(not has_function_privilege('authenticated', 'private.assert_active_photo_keeps_thumbnail()', 'execute'),
@@ -80,6 +112,11 @@ select ok(not has_function_privilege('authenticated', 'private.assert_active_pho
 select throws_ok(
   $$ set local role anon; select private.my_garage_ids(); reset role $$,
   '42501', null, 'anon cannot call a policy helper');
+select throws_ok(
+  $$ set local role authenticated;
+     select set_config('request.jwt.claims', '{"sub":"20000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
+     select * from private.my_garage_ids(); reset role $$,
+  '42501', null, 'authenticated cannot call a policy helper directly');
 select throws_ok(
   $$ set local role anon; select private.assert_fiche_has_thumbnail(); reset role $$,
   '42501', null, 'anon cannot call a trigger function');

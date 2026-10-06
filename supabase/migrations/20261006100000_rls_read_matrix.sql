@@ -9,10 +9,11 @@
 -- ---------------------------------------------------------------------------
 -- Policy helpers
 --
--- A policy runs with the privileges of the querying role, so the only two
--- functions a client role may execute live here. They take no argument and
--- return only the Garages of the caller (auth.uid()), so they cannot be used
--- to probe another identity or another Garage. The owner-wide read of
+-- A policy runs with the privileges of the querying role, so `authenticated`
+-- holds EXECUTE on these two functions, and only these. It holds no USAGE on
+-- the private schema: a policy still evaluates them, but a direct call from a
+-- client fails with insufficient_privilege. They take no argument and return
+-- only the Garages of the caller (auth.uid()). The owner-wide read of
 -- appartenances_garage cannot be written as a subquery of its own policy
 -- (infinite recursion), hence SECURITY DEFINER.
 -- ---------------------------------------------------------------------------
@@ -46,7 +47,6 @@ $$;
 
 revoke all on function private.my_garage_ids() from public;
 revoke all on function private.my_owned_garage_ids() from public;
-grant usage on schema private to authenticated;
 grant execute on function private.my_garage_ids() to authenticated;
 grant execute on function private.my_owned_garage_ids() to authenticated;
 
@@ -55,8 +55,13 @@ grant execute on function private.my_owned_garage_ids() to authenticated;
 -- public.garages stays closed: the matrix does not read it.
 -- ---------------------------------------------------------------------------
 
+-- appartenances_garage is granted column by column: auth_user_id, the link to
+-- Supabase Auth, is never returned to a client (the policies still use it).
+grant select (id, garage_id, role, state, created_at)
+  on table public.appartenances_garage
+to authenticated;
+
 grant select on table
-  public.appartenances_garage,
   public.oeuvres,
   public.fiches,
   public.fiche_photos,
