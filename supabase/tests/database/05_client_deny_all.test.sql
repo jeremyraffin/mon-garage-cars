@@ -1,11 +1,12 @@
 -- Client surface after #18: SELECT only, on five tables, to authenticated only.
 -- appartenances_garage is granted by column, without auth_user_id.
--- No mutation, no truncate, no grant to anon or PUBLIC, and no function a
--- client may call except the two argument-less policy helpers. Any new table in
+-- No mutation, no truncate, no grant to anon or PUBLIC, and no direct call of a
+-- function: authenticated only holds EXECUTE on the two argument-less policy
+-- helpers, without USAGE on their schema. Any new table in
 -- public must enable RLS and must not be granted to a client role: this file
 -- turns red otherwise.
 begin;
-select plan(37);
+select plan(38);
 
 -- RLS coverage ---------------------------------------------------------------
 select is(
@@ -16,6 +17,14 @@ select is(
   (select count(*) from pg_class c join pg_namespace n on n.oid = c.relnamespace
    where n.nspname = 'storage' and c.relkind in ('r', 'p') and not c.relrowsecurity),
   0::bigint, 'every table in storage has RLS enabled');
+
+-- TRUNCATE ignores RLS and its policies: no client may hold it on Storage.
+select is(
+  (select count(*) from pg_class c join pg_namespace n on n.oid = c.relnamespace
+   cross join (values ('anon'), ('authenticated')) r(role)
+   where n.nspname in ('public', 'storage') and c.relkind in ('r', 'p')
+     and has_table_privilege(r.role, c.oid, 'truncate')),
+  0::bigint, 'no client role may TRUNCATE any table of public or storage');
 
 -- Policies: exactly the accepted read matrix -----------------------------------
 select is(
