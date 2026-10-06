@@ -8,7 +8,7 @@ select is((select count(*) from public.garages), 2::bigint, 'two Garages');
 
 select results_eq(
   $$ select garage_id, role, state, auth_user_id is not null
-     from public.garage_memberships
+     from public.appartenances_garage
      order by garage_id, id $$,
   $$ values
     ('10000000-0000-4000-8000-00000000000a'::uuid, 'owner', 'active', true),
@@ -17,7 +17,7 @@ select results_eq(
     ('10000000-0000-4000-8000-00000000000a'::uuid, 'parent', 'historical', false),
     ('10000000-0000-4000-8000-00000000000b'::uuid, 'owner', 'active', true),
     ('10000000-0000-4000-8000-00000000000b'::uuid, 'parent', 'active', true) $$,
-  'memberships cover owner, active Parent, removed Parent and historical membership'
+  'appartenances cover owner, active Parent, removed Parent and historical appartenance'
 );
 
 select results_eq(
@@ -40,12 +40,12 @@ select is(
 );
 
 select is(
-  (select count(*) from public.garage_memberships m
+  (select count(*) from public.appartenances_garage m
    where not exists (
      select 1 from public.garages g where g.id = m.garage_id
    )),
   0::bigint,
-  'every membership belongs to a Garage'
+  'every appartenance belongs to a Garage'
 );
 
 select is(

@@ -2,11 +2,11 @@
 -- real e-mail addresses or anything from the private Garage.
 --
 -- Two Garages (A and B). Garage A has an owner, an active Parent, a removed
--- Parent and a historical membership (no Auth identity), plus one Fiche in each
+-- Parent and a historical appartenance (no Auth identity), plus one Fiche in each
 -- state. Garage B has an owner, an active Parent, a published Fiche and a
 -- Brouillon. Photo paths are placeholders: no Storage object exists.
 --
--- Identifier convention: 1… Garage, 2… Auth user, 3… membership, 4… Œuvre,
+-- Identifier convention: 1… Garage, 2… Auth user, 3… appartenance, 4… Œuvre,
 -- 5… Fiche, 6… photo.
 
 begin;
@@ -25,7 +25,7 @@ values
   ('20000000-0000-4000-8000-0000000000b2', 'authenticated', 'authenticated', 'parent.b@example.test'),
   ('20000000-0000-4000-8000-0000000000c1', 'authenticated', 'authenticated', 'stranger@example.test');
 
-insert into public.garage_memberships (id, garage_id, auth_user_id, role, state)
+insert into public.appartenances_garage (id, garage_id, auth_user_id, role, state)
 values
   ('30000000-0000-4000-8000-0000000000a1', '10000000-0000-4000-8000-00000000000a', '20000000-0000-4000-8000-0000000000a1', 'owner', 'active'),
   ('30000000-0000-4000-8000-0000000000a2', '10000000-0000-4000-8000-00000000000a', '20000000-0000-4000-8000-0000000000a2', 'parent', 'active'),
@@ -61,7 +61,7 @@ values
    '30000000-0000-4000-8000-0000000000a3', '2026-01-02 10:00:00+00',
    '30000000-0000-4000-8000-0000000000a1', '2026-01-03 10:00:00+00',
    '30000000-0000-4000-8000-0000000000a3', '2026-01-02 11:00:00+00', null, null),
-  -- Garage A: archived Fiche, created by the historical membership.
+  -- Garage A: archived Fiche, created by the historical appartenance.
   ('50000000-0000-4000-8000-0000000000a3', '10000000-0000-4000-8000-00000000000a', 'archived', 3,
    'Voiture fictive bleue', '#0033CC', 'Une voiture fictive bleue, rangée dans les archives de test.', null, null,
    '60000000-0000-4000-8000-0000000000a3',

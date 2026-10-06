@@ -28,8 +28,8 @@ select throws_ok(
   $$ set local role anon; select * from public.fiches; reset role $$,
   '42501', null, 'anon cannot read Fiches');
 select throws_ok(
-  $$ set local role anon; select * from public.garage_memberships; reset role $$,
-  '42501', null, 'anon cannot read memberships');
+  $$ set local role anon; select * from public.appartenances_garage; reset role $$,
+  '42501', null, 'anon cannot read appartenances');
 select throws_ok(
   $$ set local role anon; select private.assert_fiche_has_thumbnail(); reset role $$,
   '42501', null, 'anon cannot call a private function');
@@ -40,7 +40,7 @@ select throws_ok(
     select set_config('request.jwt.claims', '{"sub":"%s","role":"authenticated"}', true);
     select * from public.%I; reset role $$, '20000000-0000-4000-8000-0000000000a1', t),
   '42501', null, 'owner of A cannot read ' || t)
-from unnest(array['garages', 'garage_memberships', 'oeuvres', 'fiches', 'fiche_photos', 'fiche_oeuvres']) as t;
+from unnest(array['garages', 'appartenances_garage', 'oeuvres', 'fiches', 'fiche_photos', 'fiche_oeuvres']) as t;
 
 select throws_ok(
   $$ set local role authenticated;

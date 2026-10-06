@@ -2,7 +2,7 @@
 -- Each statement ends with `set constraints all immediate` so that deferred
 -- checks (active photo, thumbnail) fire inside the assertion.
 begin;
-select plan(30);
+select plan(36);
 
 select col_type_is('public', 'fiches', 'number', 'text', 'the number is text');
 
@@ -17,8 +17,9 @@ select lives_ok(
   $$ update public.fiches set version = 3 where id = '50000000-0000-4000-8000-0000000000a2' $$,
   'a positive version is accepted');
 select throws_ok(
-  $$ update public.fiches set status = 'deleted' where id = '50000000-0000-4000-8000-0000000000a2' $$,
-  '23514', null, 'unknown status is refused');
+  $$ update public.fiches set status = 'deleted' where id = '50000000-0000-4000-8000-0000000000a3' $$,
+  '23514', 'new row for relation "fiches" violates check constraint "fiches_status_valid"',
+  'unknown status is refused');
 
 -- Colour, blank fields
 select throws_ok(
@@ -55,9 +56,11 @@ select throws_ok(
 select throws_ok(
   $$ update public.fiches set status = 'published', name_fr = 'Nom', color = '#112233',
        description = 'Description', published_by = '30000000-0000-4000-8000-0000000000a1',
-       published_at = now();
+       published_at = now(), updated_at = now()
+     where id = '50000000-0000-4000-8000-0000000000a1';
      set constraints all immediate $$,
-  '23514', null, 'publishing is refused while the active photo has no thumbnail');
+  '23514', 'Fiche 50000000-0000-4000-8000-0000000000a1 is published but its active photo has no thumbnail',
+  'publishing is refused while the active photo has no thumbnail');
 select lives_ok(
   $$ update public.fiche_photos set thumbnail_path =
        '10000000-0000-4000-8000-00000000000a/50000000-0000-4000-8000-0000000000a1/60000000-0000-4000-8000-0000000000a1/thumbnail.webp'
@@ -72,7 +75,8 @@ select throws_ok(
   $$ update public.fiche_photos set thumbnail_path = null
      where id = '60000000-0000-4000-8000-0000000000a2';
      set constraints all immediate $$,
-  '23514', null, 'the thumbnail of a published Fiche cannot be removed');
+  '23514', 'Photo 60000000-0000-4000-8000-0000000000a2 is the active photo of a published or archived Fiche and needs a thumbnail',
+  'the thumbnail of a published Fiche cannot be removed');
 
 -- Metadata coherence
 select throws_ok(
@@ -92,11 +96,38 @@ select throws_ok(
 select throws_ok(
   $$ update public.fiches set updated_at = created_at - interval '1 day'
      where id = '50000000-0000-4000-8000-0000000000a2' $$,
-  '23514', null, 'a Fiche cannot be updated before being created');
+  '23514', 'new row for relation "fiches" violates check constraint "fiches_updated_after_creation"',
+  'a Fiche cannot be updated before being created');
 select throws_ok(
   $$ update public.fiches set archived_at = published_at - interval '1 day'
      where id = '50000000-0000-4000-8000-0000000000a3' $$,
-  '23514', null, 'a Fiche cannot be archived before being published');
+  '23514', 'new row for relation "fiches" violates check constraint "fiches_archived_after_publication"',
+  'a Fiche cannot be archived before being published');
+
+select throws_ok(
+  $$ update public.fiches set published_at = created_at - interval '1 day'
+     where id = '50000000-0000-4000-8000-0000000000a2' $$,
+  '23514', 'new row for relation "fiches" violates check constraint "fiches_published_after_creation"',
+  'a Fiche cannot be published before being created');
+select throws_ok(
+  $$ update public.fiches set updated_at = created_at
+     where id = '50000000-0000-4000-8000-0000000000a3' $$,
+  '23514', 'new row for relation "fiches" violates check constraint "fiches_updated_after_events"',
+  'the last modification cannot precede publication or archiving');
+select throws_ok(
+  $$ update public.fiches set updated_by = null where id = '50000000-0000-4000-8000-0000000000a2' $$,
+  '23502', null, 'the last editor is required');
+select throws_ok(
+  $$ update public.fiches set created_by = null where id = '50000000-0000-4000-8000-0000000000a2' $$,
+  '23502', null, 'the creator is required');
+select throws_ok(
+  $$ update public.fiche_photos set master_path = null where id = '60000000-0000-4000-8000-0000000000a1' $$,
+  '23502', null, 'a photo needs its master');
+select throws_ok(
+  $$ update public.fiche_photos set thumbnail_path = 'thumbnail.webp'
+     where id = '60000000-0000-4000-8000-0000000000a2' $$,
+  '23514', 'new row for relation "fiche_photos" violates check constraint "fiche_photos_thumbnail_path_format"',
+  'a thumbnail path without the photo id is refused');
 
 -- Optional fields and no uniqueness on similar Fiches
 select lives_ok(

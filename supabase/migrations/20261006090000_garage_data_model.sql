@@ -1,4 +1,4 @@
--- Garage data model (issue #17, parent #4): Garages, memberships, Fiches,
+-- Garage data model (issue #17, parent #4): Garages, appartenances, Fiches,
 -- Œuvres, Fiche–Œuvre links and photos.
 --
 -- Every private table carries its own garage_id and every relation is a
@@ -23,45 +23,45 @@ create table public.garages (
 );
 
 -- ---------------------------------------------------------------------------
--- Garage memberships
+-- Garage appartenances
 --
--- The membership id is the Garage-scoped pseudonymous identity used for audit
--- columns. The Auth identity is only a link: a historical membership keeps its
--- id but has no Auth identity and grants no access. A removed membership keeps
+-- The appartenance id is the Garage-scoped pseudonymous identity used for audit
+-- columns. The Auth identity is only a link: a historical appartenance keeps its
+-- id but has no Auth identity and grants no access. A removed appartenance keeps
 -- its rows' audit references; deleting its Auth user detaches it.
 -- ---------------------------------------------------------------------------
 
-create table public.garage_memberships (
+create table public.appartenances_garage (
   id uuid primary key default gen_random_uuid(),
   garage_id uuid not null references public.garages (id),
   auth_user_id uuid references auth.users (id) on delete set null,
   role text not null,
   state text not null,
   created_at timestamptz not null default now(),
-  constraint garage_memberships_role_valid check (role in ('owner', 'parent')),
-  constraint garage_memberships_state_valid check (
+  constraint appartenances_garage_role_valid check (role in ('owner', 'parent')),
+  constraint appartenances_garage_state_valid check (
     state in ('active', 'removed', 'historical')
   ),
-  constraint garage_memberships_identity_matches_state check (
+  constraint appartenances_garage_identity_matches_state check (
     case state
       when 'active' then auth_user_id is not null
       when 'historical' then auth_user_id is null
       else true
     end
   ),
-  constraint garage_memberships_id_garage_key unique (id, garage_id)
+  constraint appartenances_garage_id_garage_key unique (id, garage_id)
 );
 
-create unique index garage_memberships_one_active_owner
-  on public.garage_memberships (garage_id)
+create unique index appartenances_garage_one_active_owner
+  on public.appartenances_garage (garage_id)
   where role = 'owner' and state = 'active';
 
-create unique index garage_memberships_one_active_per_identity
-  on public.garage_memberships (garage_id, auth_user_id)
+create unique index appartenances_garage_one_active_per_identity
+  on public.appartenances_garage (garage_id, auth_user_id)
   where state = 'active';
 
-create index garage_memberships_auth_user_idx
-  on public.garage_memberships (auth_user_id)
+create index appartenances_garage_auth_user_idx
+  on public.appartenances_garage (auth_user_id)
   where auth_user_id is not null;
 
 -- ---------------------------------------------------------------------------
@@ -141,20 +141,27 @@ create table public.fiches (
         and archived_by is not null and archived_at is not null
     end
   ),
-  constraint fiches_dates_ordered check (
-    updated_at >= created_at
-    and (published_at is null or published_at >= created_at)
-    and (archived_at is null or archived_at >= published_at)
+  -- The last modification never precedes creation, publication or archiving.
+  constraint fiches_updated_after_creation check (updated_at >= created_at),
+  constraint fiches_published_after_creation check (
+    published_at is null or published_at >= created_at
   ),
-  -- Authors are memberships of the Fiche's own Garage.
+  constraint fiches_archived_after_publication check (
+    archived_at is null or archived_at >= published_at
+  ),
+  constraint fiches_updated_after_events check (
+    (published_at is null or updated_at >= published_at)
+    and (archived_at is null or updated_at >= archived_at)
+  ),
+  -- Authors are appartenances of the Fiche's own Garage.
   constraint fiches_created_by_fkey foreign key (created_by, garage_id)
-    references public.garage_memberships (id, garage_id),
+    references public.appartenances_garage (id, garage_id),
   constraint fiches_updated_by_fkey foreign key (updated_by, garage_id)
-    references public.garage_memberships (id, garage_id),
+    references public.appartenances_garage (id, garage_id),
   constraint fiches_published_by_fkey foreign key (published_by, garage_id)
-    references public.garage_memberships (id, garage_id),
+    references public.appartenances_garage (id, garage_id),
   constraint fiches_archived_by_fkey foreign key (archived_by, garage_id)
-    references public.garage_memberships (id, garage_id)
+    references public.appartenances_garage (id, garage_id)
 );
 
 create index fiches_garage_status_idx on public.fiches (garage_id, status);
@@ -275,7 +282,7 @@ create index fiche_oeuvres_oeuvre_idx on public.fiche_oeuvres (oeuvre_id);
 -- ---------------------------------------------------------------------------
 
 alter table public.garages enable row level security;
-alter table public.garage_memberships enable row level security;
+alter table public.appartenances_garage enable row level security;
 alter table public.oeuvres enable row level security;
 alter table public.fiches enable row level security;
 alter table public.fiche_photos enable row level security;
@@ -284,7 +291,7 @@ alter table public.fiche_oeuvres enable row level security;
 -- Supabase grants new public tables to the Data API roles by default.
 revoke all on table
   public.garages,
-  public.garage_memberships,
+  public.appartenances_garage,
   public.oeuvres,
   public.fiches,
   public.fiche_photos,
