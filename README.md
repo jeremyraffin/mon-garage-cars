@@ -15,7 +15,7 @@ Ce projet sert de terrain d'expérimentation à l'[Agentic Software Engineering 
 - **Garage** : collection privée, réservée aux Parents et aux appareils familiaux autorisés. Ses données réelles ne sont jamais dans ce dépôt.
 - **Vitrine** : collection de démonstration publique, à la racine du site (`/`), alimentée uniquement par des données explicitement approuvées.
 
-Spec du premier Garage utilisable : [`docs/specs/0001-premier-garage-utilisable.md`](docs/specs/0001-premier-garage-utilisable.md). Vocabulaire du domaine : [`CONTEXT.md`](CONTEXT.md).
+Spec du premier Garage utilisable : [`docs/specs/0001-premier-garage-utilisable.md`](docs/specs/0001-premier-garage-utilisable.md). Vocabulaire du domaine : [`GLOSSARY.md`](GLOSSARY.md).
 
 ## Décisions d'architecture
 

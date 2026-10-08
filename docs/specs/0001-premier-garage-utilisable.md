@@ -14,7 +14,7 @@ La première version doit rester utilisable sans reconnaissance d’image ni ser
 
 ## Références obligatoires
 
-- le langage du domaine est défini dans `CONTEXT.md` ;
+- le langage du domaine est défini dans `GLOSSARY.md` ;
 - la séparation entre Garage et Vitrine est définie par l’ADR 0001 ;
 - Supabase et la stratégie de sauvegarde sont définis par l’ADR 0002 ;
 - la frontière entre lectures et commandes est définie par l’ADR 0003 ;

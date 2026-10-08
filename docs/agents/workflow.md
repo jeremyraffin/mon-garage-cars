@@ -2,10 +2,10 @@
 
 ## 1. Projet
 
-- Produit : Mon Garage Cars, catalogue visuel et sonore de miniatures *Cars* (voir `CONTEXT.md`).
+- Produit : Mon Garage Cars, catalogue visuel et sonore de miniatures *Cars* (voir `GLOSSARY.md`).
 - Utilisateurs principaux : un Enfant de quatre ans en Mode Enfant (lecture seule), des Parents qui entretiennent le Garage, un Propriétaire.
 - Stack : client React, TypeScript et Vite (`src/`) ; Supabase pour Postgres, Auth, Storage et Edge Functions (`supabase/`) ; Playwright (`e2e/`) ; paquet npm unique, Node épinglé par `.nvmrc`. Décisions : ADR 0002, 0003 et 0005.
-- Documentation métier : `CONTEXT.md` (langage), `docs/specs/0001-premier-garage-utilisable.md` (spec), `docs/adr/` (décisions), `docs/agents/bootstrap-plan.md` (plan de bootstrap).
+- Documentation métier : `GLOSSARY.md` (langage), `docs/specs/0001-premier-garage-utilisable.md` (spec), `docs/adr/` (décisions), `docs/agents/bootstrap-plan.md` (plan de bootstrap).
 - Propriétaire humain des décisions : Jérémy Raffin.
 - Langue : branches, commits et titres de PR en anglais, avec les termes du domaine en français (`feat: add Fiche draft creation`) ; issues, specs, ADR et corps de PR en français.
 
