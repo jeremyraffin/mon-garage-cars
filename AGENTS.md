@@ -1,6 +1,6 @@
 # Règles de travail des agents
 
-Ce projet suit l’`Agentic Software Engineering Workflow v0.3.0`. La matrice d’affectation des modèles reste la version `v0.1` (`docs/agents/models.md`) : les deux versions sont indépendantes. Lire aussi :
+Ce projet suit l’`Agentic Software Engineering Workflow v0.4.0`. La matrice d’affectation des modèles reste la version `v0.1` (`docs/agents/models.md`) : les deux versions sont indépendantes. Lire aussi :
 
 - `docs/agents/workflow.md` pour les règles propres au projet : environnements, langues, matrice de vérification, sécurité, contraintes d’architecture ;
 - `docs/agents/models.md` pour l’affectation des rôles ;
@@ -100,7 +100,10 @@ Le compte rendu final contient :
 - les fichiers ou comportements importants ;
 - les vérifications exécutées et leur résultat ;
 - les risques, limites ou décisions encore ouvertes ;
+- la prochaine phase, le rôle attendu et l’action qu’il doit mener, selon le handoff de `docs/agents/phases.md` ;
 - le lien vers la PR ou l’issue si applicable.
+
+Ce compte rendu est publié dans l’issue ou la PR qui porte la tâche. Une conversation d’agent reste un brouillon tant que son résultat n’y est pas publié (`docs/agents/evidence.md`). Exception : une tâche FAST sans issue ni PR est rendue dans la réponse à la demande, qui tient alors lieu de compte rendu durable.
 
 ## Agent skills
 

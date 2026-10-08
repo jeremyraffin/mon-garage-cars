@@ -6,7 +6,7 @@ Lire ce document avant un commit non-WIP, un passage en Review ou la clôture d�
 
 Toute preuve nomme le point fixe qu’elle couvre, idéalement le SHA du commit. Avant l’ouverture d’une PR, la preuve utile au passage de relais vit dans la demande ou l’issue qui porte la tâche. Dès qu’une PR existe, elle devient le dossier durable de la tâche et reprend les décisions antérieures qui doivent rester auditables.
 
-Un rapport local, un fichier non publié ou une conversation avec un agent est un brouillon. Il devient une preuve durable seulement lorsque son résultat est publié dans la PR sous forme de commentaire, review, mise à jour de la description ou lien vers un artefact conservé. Ne jamais publier de secret ni de donnée sensible.
+Un rapport local, un fichier non publié ou une conversation avec un agent est un brouillon, sauf pour une tâche FAST sans issue ni PR, où la réponse à la demande est la trace durable. Il devient une preuve durable seulement lorsque son résultat est publié dans la PR sous forme de commentaire, review, mise à jour de la description ou lien vers un artefact conservé. Ne jamais publier de secret ni de donnée sensible.
 
 ## Commit non-WIP
 
@@ -48,13 +48,13 @@ Une couche non applicable porte `N/A` avec sa raison. `Non vérifié` reste une 
 
 Le rapport publié contient au minimum :
 
-- l’identité du reviewer, son rôle et la raison de son indépendance ;
+- l’identité du reviewer, son environnement, son modèle effectif, son rôle et la raison de son indépendance ;
 - le point fixe ou la plage de diff examinée ;
 - la spec, les conventions et les résultats de vérification reçus ;
 - les axes couverts et les findings classés `BLOCKING`, `IMPORTANT` ou `SUGGESTION` ;
 - la disposition de chaque finding et, après correction, le nouveau point fixe revu.
 
-Un résumé de l’implémenteur ne remplace pas ce rapport. Le human gate est une décision humaine explicite dans la PR, distincte du rapport de review.
+Un résumé de l’implémenteur ne remplace pas ce rapport. Le human gate est une décision humaine explicite dans la PR, distincte du rapport de review. Le merge lui-même n’en tient pas lieu : la décision est publiée avant le merge, par un commentaire ou une approbation qui nomme le commit candidat.
 
 ## Ordre de clôture
 

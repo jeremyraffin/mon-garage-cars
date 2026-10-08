@@ -8,7 +8,7 @@ En cours de développement. La Vitrine publique est en production sur [mon-garag
 
 ## Workflow agentique
 
-Ce projet sert de terrain d'expérimentation à l'[Agentic Software Engineering Workflow](https://github.com/jeremyraffin/agentic-software-engineering-workflow) (`v0.3.0`) : spécification, architecture, implémentation et review sont confiées à des agents distincts, avec des validations humaines explicites. Les règles des agents sont dans [`AGENTS.md`](AGENTS.md) et [`docs/agents/`](docs/agents/).
+Ce projet sert de terrain d'expérimentation à l'[Agentic Software Engineering Workflow](https://github.com/jeremyraffin/agentic-software-engineering-workflow) (`v0.4.0`) : spécification, architecture, implémentation et review sont confiées à des agents distincts, avec des validations humaines explicites. Les règles des agents sont dans [`AGENTS.md`](AGENTS.md) et [`docs/agents/`](docs/agents/).
 
 ## Périmètre
 

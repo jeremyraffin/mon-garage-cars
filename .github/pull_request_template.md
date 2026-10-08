@@ -30,6 +30,12 @@ Closes #<numéro> <!-- ou « Refs #<numéro> » si la PR ne termine pas l'issue 
 
 <!-- Risques résiduels, limites connues, rollback, décisions encore ouvertes, prérequis humains et éléments hors périmètre. -->
 
+## Handoff
+
+- Next phase and role: `<phase et rôle attendus selon docs/agents/phases.md>`
+- Expected action: `<ce que le rôle suivant doit faire>`
+- Open decisions: `<décisions ouvertes / aucune>`
+
 ## Merge Danger
 
 **Door:** <!-- one-way ou two-way : le merge est-il réversible sans migration ni intervention manuelle ? -->

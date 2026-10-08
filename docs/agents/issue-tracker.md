@@ -1,3 +1,5 @@
+<!-- Adapté de mattpocock/skills (setup-matt-pocock-skills), MIT © 2026 Matt Pocock. Voir THIRD_PARTY_NOTICES.md. -->
+
 # Issue tracker: GitHub
 
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.

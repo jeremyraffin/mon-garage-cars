@@ -83,10 +83,28 @@ type:refactor type:security   type:chore
 
 risk:fast     risk:standard   risk:high
 
-blocked       needs-decision
+blocked          needs-decision   needs-triage
+needs-info       ready-for-agent  ready-for-human
 ```
 
 Ajouter des labels `area:*` seulement quand ils deviennent utiles.
+
+### Labels et état d’une tâche
+
+Les labels `type:*` et `risk:*` décrivent la nature et le niveau de risque d’une issue. Ils sont posés à l’intake et ne changent que si la tâche change de niveau. Les labels d’état indiquent qui intervient ensuite ; une issue ouverte en porte au plus un :
+
+| Label d’état | Signification | Prochain intervenant |
+|---|---|---|
+| `needs-triage` | demande à évaluer | humain, éventuellement assisté de `$triage` |
+| `needs-info` | information manquante | auteur de la demande |
+| `needs-decision` | décision humaine requise | humain |
+| `blocked` | dépend d’une issue encore ouverte | aucun, jusqu’à la levée du blocage |
+| `ready-for-agent` | spec ou ticket approuvé, handoff publié | rôle nommé dans le handoff |
+| `ready-for-human` | implémentation humaine attendue | humain |
+
+`wontfix` accompagne la fermeture d’une issue non traitée. Les correspondances avec le vocabulaire des skills sont dans `triage-labels.md`.
+
+Changer de label d’état fait partie du handoff : le commentaire qui l’accompagne nomme le rôle et l’action attendus. Dès qu’une PR existe, elle porte la suite selon `evidence.md`, et l’issue conserve son dernier état jusqu’à sa clôture.
 
 ### Branches, commits et PR
 

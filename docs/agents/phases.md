@@ -9,7 +9,7 @@ Une phase se termine uniquement lorsque son critère de sortie est observable. A
 1. la source approuvée : demande, issue, spec ou ADR ;
 2. le résultat produit et les preuves de vérification ;
 3. les décisions ouvertes, risques et éléments hors périmètre ;
-4. la prochaine phase et le rôle attendu.
+4. la prochaine phase, le rôle attendu et l’action qu’il doit mener.
 
 Le rôle suivant vérifie ce handoff avant d’agir. Une entrée manquante renvoie la tâche à la phase précédente ; elle n’est pas complétée par supposition. Avant l’ouverture d’une PR, un human gate est matérialisé dans la demande ou l’issue qui porte la tâche. Dès qu’une PR existe, les preuves, reviews et validations humaines suivent `evidence.md`, et toute décision antérieure durable y est transcrite.
 
@@ -27,7 +27,7 @@ Le rôle suivant vérifie ce handoff avant d’agir. Une entrée manquante renvo
 | 7. Review indépendante | diff STANDARD ou HIGH-RISK vérifié | Code Review avec `$code-review` ; Security Review si la surface le justifie | rapports couvrant les axes requis, findings et preuves publiés dans la PR | chaque axe requis est examiné et chaque finding classé `BLOCKING`, `IMPORTANT` ou `SUGGESTION` | Corrections si un `BLOCKING` ou `IMPORTANT` reste ouvert ; sinon Human gate avec les suggestions enregistrées |
 | 8. Corrections | finding à traiter | Implementation, distinct du reviewer | correction ciblée et nouvelles preuves | vérification verte et finding résolu ou accepté explicitement | retour en Review |
 | 9. Human gate et merge | candidat revu, checks verts | humain ; l’agent peut préparer la PR avec `$pr` | décision durable d’approuver, refuser ou demander des changements | approbation et risques résiduels enregistrés | Merge puis Release |
-| 10. Release | merge produisant un état livré | humain en v0.1 | déploiement contrôlé et rollback connu | smoke tests critiques réussis | Retro si signal utile, sinon prochain ticket |
+| 10. Release | merge produisant un état livré | humain (matrice v0.1 de `models.md`) | déploiement contrôlé et rollback connu | smoke tests critiques réussis | Retro si signal utile, sinon prochain ticket |
 | 11. Retro | incident, friction récurrente ou jalon significatif | Retro / Steering avec `$retro` | peu d’actions mesurables, chacune avec propriétaire ou déclencheur | actions enregistrées dans le backlog ou le guide | Intake |
 
 Le même agent peut tenir plusieurs rôles successifs lorsque l’indépendance n’est pas requise. L’implémentation et la review restent séparées sur STANDARD et HIGH-RISK.

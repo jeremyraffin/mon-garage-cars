@@ -1,3 +1,5 @@
+<!-- Adapté de mattpocock/skills (setup-matt-pocock-skills), MIT © 2026 Matt Pocock. Voir THIRD_PARTY_NOTICES.md. -->
+
 # Triage Labels
 
 The skills speak in terms of five canonical triage roles. This file maps those roles to the actual label strings used in this repo's issue tracker.
