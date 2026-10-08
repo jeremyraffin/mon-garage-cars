@@ -27,3 +27,6 @@ dumps/
 *.zip
 *.tar
 *.tgz
+
+# Local agent settings
+.claude/settings.local.json
