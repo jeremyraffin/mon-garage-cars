@@ -4,7 +4,11 @@ Catalogue visuel et sonore des miniatures de l'univers des films _Cars_ que poss
 
 ## Statut
 
-Bootstrap technique terminé (issue #2). Le dépôt contient une coquille neutre et son outillage de vérification : aucune fonctionnalité produit n'est encore implémentée. La première tranche produit est la Vitrine publique (issue #3).
+En cours de développement. La Vitrine publique est en production sur [mon-garage-cars.pages.dev](https://mon-garage-cars.pages.dev/) (issue #3). Le modèle de données, la matrice de lecture RLS et le stockage privé des photos sont livrés (issues #17 et #18) ; la sauvegarde et la restauration restent à faire (issue #19). Le Garage privé n'est pas encore utilisable : l'authentification des Parents, la saisie des Fiches et le Mode Enfant sont les prochaines tranches de la spec.
+
+## Workflow agentique
+
+Ce projet sert de terrain d'expérimentation à l'[Agentic Software Engineering Workflow](https://github.com/jeremyraffin/agentic-software-engineering-workflow) (`v0.3.0`) : spécification, architecture, implémentation et review sont confiées à des agents distincts, avec des validations humaines explicites. Les règles des agents sont dans [`AGENTS.md`](AGENTS.md) et [`docs/agents/`](docs/agents/).
 
 ## Périmètre
 
